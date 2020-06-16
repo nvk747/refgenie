@@ -1,0 +1,33 @@
+<tool id="refgenie_fetch_genome" name=" Refgenie reference Genome download" version="0.0.1" tool_type="manage_data" profile="20.05">
+    <description>fetching</description>
+    <requirements>
+        <requirement type="package" version="0.01">refgenie</requirement>
+    </requirements>
+    <command detect_errors="exit_code"><![CDATA[
+       refgenie pull -c '$__app__.config.refgenie_config_file' -g '$genome' '$assets' >
+       '${out_file}'
+    ]]></command>
+    <inputs>
+        <param argument="--genome" name="genome" type="drill_down" display="radio" hierarchy="exact" multiple="False" optional="False" label="Choose Target Genome" dynamic_options="galaxy_code_get_refgenie_folders( genomespace_site = 'prod', trans=__trans__, value=__value__, input_dataset=input1, base_url=base_url )" help="Reference assembly ID, e.g. mm10"/>
+        <param argument="--assets" name="assets" type="drill_down" display="radio" hierarchy="exact" multiple="False" optional="False" label="list of asset-registry-paths" dynamic_options="galaxy_code_get_refgenie_folders( genomespace_site = 'prod', trans=__trans__, value=__value__, input_dataset=input1, base_url=base_url )" help="string of asset-registry-paths"/>
+    </inputs>
+    <outputs>
+        <data name="out_file" format="data_manager_json"/>
+    </outputs>
+    <tests>
+        <!-- TODO: need some way to test that new entry was added to data table -->
+        <test>
+            <param name="genome_config" value="genome_config.yaml"/>
+            <param name="genome" value="hg38_chr22"/>
+            <param name="assets" value="bwa_index"/>
+            <output name="out_file" file="genome_config.yaml"/>
+        </test>
+    </tests>
+    <help>
+            **What it does**
+            Fetches a reference genome from http://refgenomes.databio.org.
+            ------
+            .. class:: infomark
+            **Notice:** If you leave name, description, or id blank, it will be generated automatically.
+    </help>
+</tool>
